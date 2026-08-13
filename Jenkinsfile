@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOTNET_ROOT = "/home/azureuser/.dotnet"
+        DOTNET_ROOT = "/opt/dotnet"
         PATH = "${DOTNET_ROOT}:${env.PATH}"
     }
 
