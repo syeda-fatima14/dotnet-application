@@ -26,7 +26,7 @@ services:
     environment:
       ConnectionStrings__identitydb: "Host=postgres;Database=identitydb;Username=postgres;Password=postgres"
     healthcheck:
-      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080 || exit 1"]
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -52,13 +52,16 @@ services:
   catalog-api:
     image: syedafatima14/eshop-catalog-api:latest
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     ports:
       - "5101:8080"
     environment:
       ConnectionStrings__catalogdb: "Host=postgres;Database=catalogdb;Username=postgres;Password=postgres"
     healthcheck:
-      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080 || exit 1"]
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -73,7 +76,7 @@ services:
     environment:
       ConnectionStrings__basketdb: "redis:6379"
     healthcheck:
-      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080 || exit 1"]
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -90,8 +93,9 @@ services:
       - "5103:8080"
     environment:
       ConnectionStrings__orderingdb: "Host=postgres;Database=orderingdb;Username=postgres;Password=postgres"
+      ConnectionStrings__EventBus: "amqp://guest:guest@rabbitmq:5672"
     healthcheck:
-      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080 || exit 1"]
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080"]
       interval: 5s
       timeout: 5s
       retries: 10
