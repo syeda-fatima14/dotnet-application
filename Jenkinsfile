@@ -49,7 +49,6 @@ pipeline {
                 '''
             }
         }
-    }
     
         stage('Deploy') {
             steps {
@@ -59,6 +58,7 @@ pipeline {
                 '''
             }
         }
+   }
         
     post {
         always { echo 'Pipeline finished.' }
