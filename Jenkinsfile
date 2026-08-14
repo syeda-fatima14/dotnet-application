@@ -32,6 +32,7 @@ pipeline {
                     docker build -f src/Catalog.API/Dockerfile -t $IMAGE_PREFIX-catalog-api:latest .
                     docker build -f src/Ordering.API/Dockerfile -t $IMAGE_PREFIX-ordering-api:latest .
                     docker build -f src/Basket.API/Dockerfile -t $IMAGE_PREFIX-basket-api:latest .
+                    docker build -f src/Identity.API/Dockerfile -t $IMAGE_PREFIX-identity-api:latest .             
                 '''
             }
         }
@@ -41,6 +42,7 @@ pipeline {
                 sh '''
                     echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin
                     docker push $IMAGE_PREFIX-webapp:latest
+                    docker push $IMAGE_PREFIX-identity-api:latest
                     docker push $IMAGE_PREFIX-catalog-api:latest
                     docker push $IMAGE_PREFIX-ordering-api:latest
                     docker push $IMAGE_PREFIX-basket-api:latest
@@ -48,7 +50,16 @@ pipeline {
             }
         }
     }
-
+    
+        stage('Deploy') {
+            steps {
+                sh '''
+                    docker compose pull
+                    docker compose up -d --remove-orphans
+                '''
+            }
+        }
+        
     post {
         always { echo 'Pipeline finished.' }
         success { echo 'Build, tests, and image push succeeded.' }
