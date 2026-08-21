@@ -127,7 +127,7 @@ pipeline {
                     docker build \
                       -f src/Identity.API/Dockerfile \
                       -t $IMAGE_PREFIX-identity-api:latest \
-                      -t $ACR_LOGIN_SERVER/eshop-identity-api:latest
+                      -t $ACR_LOGIN_SERVER/eshop-identity-api:latest .
                 '''
             }
         }
