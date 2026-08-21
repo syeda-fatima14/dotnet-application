@@ -6,6 +6,7 @@ pipeline {
         PATH = "${DOTNET_ROOT}:${env.PATH}"
         DOCKERHUB_CREDS = credentials('dockerhub-creds')
         IMAGE_PREFIX = "syedafatima14/eshop"
+        ACR_LOGIN_SERVER = "eshopacrsf14.azurecr.io"
     }
 
     stages {
@@ -28,11 +29,11 @@ pipeline {
         stage('Docker Build') {
             steps {
                 sh '''
-                    docker build -f src/WebApp/Dockerfile -t $IMAGE_PREFIX-webapp:latest .
-                    docker build -f src/Catalog.API/Dockerfile -t $IMAGE_PREFIX-catalog-api:latest .
-                    docker build -f src/Ordering.API/Dockerfile -t $IMAGE_PREFIX-ordering-api:latest .
-                    docker build -f src/Basket.API/Dockerfile -t $IMAGE_PREFIX-basket-api:latest .
-                    docker build -f src/Identity.API/Dockerfile -t $IMAGE_PREFIX-identity-api:latest .             
+                    docker build -f src/WebApp/Dockerfile -t $IMAGE_PREFIX-webapp:latest -t $ACR_LOGIN_SERVER/eshop-webapp:latest .
+                    docker build -f src/Catalog.API/Dockerfile -t $IMAGE_PREFIX-catalog-api:latest -t $ACR_LOGIN_SERVER/eshop-catalog-api:latest .
+                    docker build -f src/Ordering.API/Dockerfile -t $IMAGE_PREFIX-ordering-api:latest -t $ACR_LOGIN_SERVER/eshop-ordering-api:latest .
+                    docker build -f src/Basket.API/Dockerfile -t $IMAGE_PREFIX-basket-api:latest -t $ACR_LOGIN_SERVER/eshop-basket-api:latest .
+                    docker build -f src/Identity.API/Dockerfile -t $IMAGE_PREFIX-identity-api:latest -t $ACR_LOGIN_SERVER/eshop-identity-api:latest .
                 '''
             }
         }
@@ -40,12 +41,12 @@ pipeline {
         stage('Docker Push') {
             steps {
                 sh '''
-                    echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin
-                    docker push $IMAGE_PREFIX-webapp:latest
-                    docker push $IMAGE_PREFIX-identity-api:latest
-                    docker push $IMAGE_PREFIX-catalog-api:latest
-                    docker push $IMAGE_PREFIX-ordering-api:latest
-                    docker push $IMAGE_PREFIX-basket-api:latest
+                    echo $ACR_CREDS_PSW | docker login $ACR_LOGIN_SERVER -u $ACR_CREDS_USR --password-stdin
+                    docker push $ACR_LOGIN_SERVER-webapp:latest
+                    docker push $ACR_LOGIN_SERVER-identity-api:latest
+                    docker push $ACR_LOGIN_SERVER-catalog-api:latest
+                    docker push $ACR_LOGIN_SERVER-ordering-api:latest
+                    docker push $ACR_LOGIN_SERVER-basket-api:latest
                 '''
             }
         }
@@ -55,6 +56,7 @@ pipeline {
                 sh '''
                     docker compose pull
                     docker compose up -d --remove-orphans
+                    docker compose ps
                 '''
             }
         }
