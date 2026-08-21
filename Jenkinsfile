@@ -1,6 +1,6 @@
 pipeline {
     agent any
-
+    
     environment {
         DOTNET_ROOT = "/opt/dotnet"
         PATH = "${DOTNET_ROOT}:${env.PATH}"
