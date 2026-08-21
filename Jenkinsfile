@@ -5,6 +5,7 @@ pipeline {
         DOTNET_ROOT = "/opt/dotnet"
         PATH = "${DOTNET_ROOT}:${env.PATH}"
         DOCKERHUB_CREDS = credentials('dockerhub-creds')
+        ACR_CREDS = credentials('acr-creds')
         IMAGE_PREFIX = "syedafatima14/eshop"
         ACR_LOGIN_SERVER = "eshopacrsf14.azurecr.io"
     }
