@@ -36,7 +36,7 @@ pipeline {
                         echo "Starting SonarQube analysis..."
 
                         dotnet sonarscanner begin \
-                          /k:eshop-dotnet \
+                          /k:eshop \
                           /d:sonar.host.url=http://localhost:9000 \
                           /d:sonar.token="$SONAR_TOKEN"
                     '''
