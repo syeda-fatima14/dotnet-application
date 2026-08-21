@@ -43,11 +43,11 @@ pipeline {
             steps {
                 sh '''
                     echo $ACR_CREDS_PSW | docker login $ACR_LOGIN_SERVER -u $ACR_CREDS_USR --password-stdin
-                    docker push $ACR_LOGIN_SERVER-webapp:latest
-                    docker push $ACR_LOGIN_SERVER-identity-api:latest
-                    docker push $ACR_LOGIN_SERVER-catalog-api:latest
-                    docker push $ACR_LOGIN_SERVER-ordering-api:latest
-                    docker push $ACR_LOGIN_SERVER-basket-api:latest
+                    docker push $ACR_LOGIN_SERVER/eshop-webapp:latest
+                    docker push $ACR_LOGIN_SERVER/eshop-identity-api:latest
+                    docker push $ACR_LOGIN_SERVER/eshop-catalog-api:latest
+                    docker push $ACR_LOGIN_SERVER/eshop-ordering-api:latest
+                    docker push $ACR_LOGIN_SERVER/eshop-basket-api:latest
                 '''
             }
         }
