@@ -4,9 +4,7 @@ pipeline {
     environment {
         DOTNET_ROOT = "/opt/dotnet"
         PATH = "/opt/dotnet:/var/lib/jenkins/.dotnet/tools:${env.PATH}"
-
-        SONAR_TOKEN = credentials('sonar-token')
-
+       
         DOCKERHUB_CREDS = credentials('dockerhub-creds')
         ACR_CREDS = credentials('acr-creds')
 
@@ -24,6 +22,7 @@ pipeline {
 
         stage('SonarQube Begin') {
             steps {
+              withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                 sh '''
                     dotnet sonarscanner begin \
                       /k:eshop-dotnet \
@@ -31,6 +30,7 @@ pipeline {
                       /d:sonar.token:=$SONAR_TOKEN
                 '''
             }
+          }
         }
 
         stage('Restore') {
@@ -58,11 +58,13 @@ pipeline {
 
         stage('SonarQube End') {
             steps {
+              withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                 sh '''
                     dotnet sonarscanner end \
                       /d:sonar.token=$SONAR_TOKEN
                 '''
             }
+          }
         }
 
         stage('Docker Build') {
