@@ -27,8 +27,8 @@ pipeline {
                 sh '''
                     dotnet sonarscanner begin \
                       /k:"eshop-dotnet" \
-                      /d:sonar.host.url:"http://localhost:9000" \
-                      /d:sonar.token:"$SONAR_TOKEN"
+                      /d:sonar.host.url="http://localhost:9000" \
+                      /d:sonar.token:=$SONAR_TOKEN"
                 '''
             }
         }
@@ -60,7 +60,7 @@ pipeline {
             steps {
                 sh '''
                     dotnet sonarscanner end \
-                      /d:sonar.token:"$SONAR_TOKEN"
+                      /d:sonar.token="$SONAR_TOKEN"
                 '''
             }
         }
